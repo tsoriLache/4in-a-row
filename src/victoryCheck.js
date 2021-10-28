@@ -79,4 +79,4 @@ function checkContent([c,r],content){
     return false
 }
 
-module.export = {rowCheck,columnCheck,diagonalCheck,OppositeDiagonalCheck} ;
+// export {rowCheck,columnCheck,diagonalCheck,OppositeDiagonalCheck} ;
