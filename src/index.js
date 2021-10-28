@@ -1,5 +1,83 @@
 "use strict";
 
+function columnCheck(c,r,color){
+  let count = 0;
+  for (let r=0; r < 7; r++){
+      if(checkContent(c,r,color,board)){
+          count++;
+          if(count===4)return true;
+      }else{
+          count = 0;
+      }
+      if(count+2<r){
+          break
+      }
+  }
+  return false;
+}
+
+//row check
+function rowCheck(c,r,color){
+  let count = 0; 
+  for (let c=0; c < 7; c++){
+      if(checkContent(c,r,color,board)){
+          count++;
+          if(count===4)return true;
+      }else{
+          count = 0;
+      }
+      if(count+2<c){
+          break
+      }
+  }
+  return false;
+}
+//up to bottom
+function diagonalCheck(col,row,color){
+  let count = 0;
+  let c = col-row>=0?col-row:0;
+  let r = row-col>=0?row-col:0;
+  while(c<7&&r<7){
+      if(checkContent(c,r,color,board)){
+          count++;
+          if(count===4)return true;
+      }else{
+          count = 0;
+      }
+      //break check
+      c++;
+      r++;
+  }
+  return false
+}
+//bottom up
+function OppositeDiagonalCheck(col,row,color){
+  let count = 0;
+  let r = col+row<=6?col+row:6;
+  let c = col+row-6>=0?row+col-6:0;
+  while(c>=0&&r<=6&&r>=0){
+      console.log(c,r);
+      if(checkContent(c,r,color,board)){
+          count++;
+          if(count===4)return true;
+      }else{
+          count = 0;
+      }
+      //break check
+      c++;
+      r--;
+  }
+  return false
+}
+
+
+function checkContent(c,r,content,board){
+  console.log(c,r,content,board);
+  if(board[c][r]===`${content}`){
+      return true
+  }
+  return false
+}
 
 // import {rowCheck,columnCheck,diagonalCheck,OppositeDiagonalCheck} from './victoryCheck'; 
 
