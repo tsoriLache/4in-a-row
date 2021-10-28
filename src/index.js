@@ -115,9 +115,15 @@ class View{
 
 
 class Controller{
-  constructor(){
-      
+  constructor() {
+    this.model = new Model();
+    this.view = new View();
+
+    this.view.playEvent.addListener(columnNumber => { this.model.play(columnNumber); });
+    this.model.updateCellEvent.addListener((data) => { this.view.updateCell(data); });
+    this.model.victoryEvent.addListener(winner => { this.view.victory(winner); });
+    this.model.drawEvent.addListener(() => { this.view.draw(); });
   }
 }
 
-const view = new View();
+const app = new Controller();
