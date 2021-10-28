@@ -30,23 +30,27 @@ class Model{
   }
 
   play(columnNumber) {
-    if (this.finished || columnNumber < 0 || columnNumber > 6 ||this.board[columnNumber][6]) { return false; }
+    console.log(columnNumber);
+    console.log(this.finished );
+    if (this.finished ) { return false; }
     const rowNumber = this.board[columnNumber].findIndex(element => element===undefined)
-    this.board[columnNumber][rowNumber] = this.currentPlayer;
-    this.updateCellEvent.trigger({ columnNumber,rowNumber, player: this.currentPlayer });
-    this.finished = this.victory([columnNumber,rowNumber],this.currentPlayer) || this.draw();
+    //if(rowNumber<0)...
+    console.log(columnNumber,rowNumber,this.currentPlayer);
+    // this.board[columnNumber][rowNumber] = this.currentPlayer;
+    this.updateCellEvent.trigger({columnNumber,rowNumber,player:this.currentPlayer} );
+    this.finished = this.victory(columnNumber,rowNumber,this.currentPlayer) || this.draw();
 
     if (!this.finished) { this.switchPlayer(); }
 
     return true;
   }
   
-  victory([c,r],color) {
+  victory(c,r,color) {
       
-    const victory = rowCheck([c,r],color)||
-                    columnCheck([c,r],color)||
-                    diagonalCheck([c,r],color)||
-                    OppositeDiagonalCheck([c,r],color);
+    const victory = rowCheck(c,r,color,this.board)||
+                    columnCheck(c,r,color,this.board)||
+                    diagonalCheck(c,r,color,this.board)||
+                    OppositeDiagonalCheck(c,r,color,this.board);
     if (victory) {
       this.victoryEvent.trigger(this.currentPlayer);
     }
@@ -74,9 +78,11 @@ class View{
     for (let i = 0; i <= 6; i++) {
         this.column = this.createElement('div',['column'],{id:`c${i}`}) 
         this.app.appendChild(this.column)
+        this.column.addEventListener('click', () => {
+          this.playEvent.trigger(i);});
         for (let j = 0; j <= 6; j++) {
-          this.cell = this.createElement('span',['cell'],{id:`c${i}r${j}`}) 
-          this.column.appendChild(this.cell)
+          const cell = this.createElement('span',['cell'],{id:`c${i}r${j}`}) 
+          this.column.appendChild(cell)
         }
     }
     this.message = this.createElement('div',['message']);
@@ -99,8 +105,9 @@ class View{
     return el;
   } 
 
-  updateCell([c,r],playerColor) {
-    document.getElementById(`c${c}r${r}`).style.backgroundColor = playerColor;
+  updateCell({columnNumber, rowNumber, player}) {
+    console.log(columnNumber, rowNumber, player);
+    document.getElementById(`c${columnNumber}r${rowNumber}`).style.backgroundColor = player;
   }
 
   victory(winner) {
