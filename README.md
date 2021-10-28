@@ -1,1 +1,1 @@
-# mankala
+# 4inarow
