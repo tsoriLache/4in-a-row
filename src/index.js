@@ -1,6 +1,6 @@
 "use strict";
 
-function columnCheck(c,r,color){
+function columnCheck(c,r,color,board){
   let count = 0;
   for (let r=0; r < 7; r++){
       if(checkContent(c,r,color,board)){
@@ -17,8 +17,8 @@ function columnCheck(c,r,color){
 }
 
 //row check
-function rowCheck(c,r,color){
-  let count = 0; 
+function rowCheck(c,r,color,board){
+  let count = 0;
   for (let c=0; c < 7; c++){
       if(checkContent(c,r,color,board)){
           count++;
@@ -33,7 +33,7 @@ function rowCheck(c,r,color){
   return false;
 }
 //up to bottom
-function diagonalCheck(col,row,color){
+function diagonalCheck(col,row,color,board){
   let count = 0;
   let c = col-row>=0?col-row:0;
   let r = row-col>=0?row-col:0;
@@ -51,12 +51,11 @@ function diagonalCheck(col,row,color){
   return false
 }
 //bottom up
-function OppositeDiagonalCheck(col,row,color){
+function OppositeDiagonalCheck(col,row,color,board){
   let count = 0;
   let r = col+row<=6?col+row:6;
   let c = col+row-6>=0?row+col-6:0;
-  while(c>=0&&r<=6&&r>=0){
-      console.log(c,r);
+  while(c<=6&&c>=0&&r<=6&&r>=0){
       if(checkContent(c,r,color,board)){
           count++;
           if(count===4)return true;
@@ -98,23 +97,27 @@ class Event {
 
 class Model{
   constructor(){
-    this.board = Array(7).fill(Array(7));
+    this.board = [[,,,,,,],
+                  [,,,,,,],
+                  [,,,,,,],
+                  [,,,,,,],
+                  [,,,,,,],
+                  [,,,,,,],
+                  [,,,,,,]]
     this.currentPlayer = 'red';
     this.finished = false;
 
     this.updateCellEvent = new Event();
     this.victoryEvent = new Event();
     this.drawEvent = new Event();
-  }
 
+  }
+  
   play(columnNumber) {
-    console.log(columnNumber);
-    console.log(this.finished );
     if (this.finished ) { return false; }
     const rowNumber = this.board[columnNumber].findIndex(element => element===undefined)
     //if(rowNumber<0)...
-    console.log(columnNumber,rowNumber,this.currentPlayer);
-    // this.board[columnNumber][rowNumber] = this.currentPlayer;
+    this.board[columnNumber][rowNumber] = this.currentPlayer;
     this.updateCellEvent.trigger({columnNumber,rowNumber,player:this.currentPlayer} );
     this.finished = this.victory(columnNumber,rowNumber,this.currentPlayer) || this.draw();
 
@@ -124,7 +127,6 @@ class Model{
   }
   
   victory(c,r,color) {
-      
     const victory = rowCheck(c,r,color,this.board)||
                     columnCheck(c,r,color,this.board)||
                     diagonalCheck(c,r,color,this.board)||
@@ -136,7 +138,8 @@ class Model{
   }
 
   draw() {
-    const draw = board[6].every(cell =>cell==='red'||cell==='yellow');    
+    console.log(this.board);
+    const draw = this.board.every(columnArr =>columnArr[6]==='red'||columnArr[6]==='yellow');    
     if (draw) {
       this.drawEvent.trigger();
     }
@@ -156,8 +159,8 @@ class View{
     for (let i = 0; i <= 6; i++) {
         this.column = this.createElement('div',['column'],{id:`c${i}`}) 
         this.app.appendChild(this.column)
-        this.column.addEventListener('click', () => {
-          this.playEvent.trigger(i);});
+        this.column.addEventListener('click', () => {this.playEvent.trigger(i);
+        });
         for (let j = 0; j <= 6; j++) {
           const cell = this.createElement('span',['cell'],{id:`c${i}r${j}`}) 
           this.column.appendChild(cell)
@@ -184,7 +187,6 @@ class View{
   } 
 
   updateCell({columnNumber, rowNumber, player}) {
-    console.log(columnNumber, rowNumber, player);
     document.getElementById(`c${columnNumber}r${rowNumber}`).style.backgroundColor = player;
   }
 
@@ -204,7 +206,7 @@ class Controller{
     this.model = new Model();
     this.view = new View();
 
-    this.view.playEvent.addListener(columnNumber => { this.model.play(columnNumber); });
+    this.view.playEvent.addListener(columnNumber => {this.model.play(columnNumber); });
     this.model.updateCellEvent.addListener((data) => { this.view.updateCell(data); });
     this.model.victoryEvent.addListener(winner => { this.view.victory(winner); });
     this.model.drawEvent.addListener(() => { this.view.draw(); });
