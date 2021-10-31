@@ -1,0 +1,28 @@
+main {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-top: 10vh;
+  height: 80vh;
+  width: 70vw;
+  background-color: burlywood;
+}
+
+.column {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: space-evenly;
+  background-color: chocolate;
+  height: 80vh;
+  width: 7vw;
+}
+
+.cell {
+  height: 10vh;
+  width: 5vw;
+  background-color: white;
+  border-radius: 50%;
+  display: inline-block;
+}
