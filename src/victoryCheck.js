@@ -1,4 +1,4 @@
-const board = Array(7).fill(Array(7))
+const board = Array(7).fill(Array(7))//not really 7x7 arrays
 const play = [3,3]
 //column check
 function columnCheck(){

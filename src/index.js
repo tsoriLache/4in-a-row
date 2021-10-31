@@ -97,13 +97,13 @@ class Event {
 
 class Model{
   constructor(){
-    this.board = [[,,,,,,],
-                  [,,,,,,],
-                  [,,,,,,],
-                  [,,,,,,],
-                  [,,,,,,],
-                  [,,,,,,],
-                  [,,,,,,]]
+    this.board = [[,,,,,,,],
+                  [,,,,,,,],
+                  [,,,,,,,],
+                  [,,,,,,,],
+                  [,,,,,,,],
+                  [,,,,,,,],
+                  [,,,,,,,]]
     this.currentPlayer = 'red';
     this.finished = false;
 
@@ -114,15 +114,12 @@ class Model{
   }
   
   play(columnNumber) {
-    if (this.finished ) { return false; }
     const rowNumber = this.board[columnNumber].findIndex(element => element===undefined)
-    //if(rowNumber<0)...
+    if (this.finished||rowNumber<0) { return false; }
     this.board[columnNumber][rowNumber] = this.currentPlayer;
     this.updateCellEvent.trigger({columnNumber,rowNumber,player:this.currentPlayer} );
     this.finished = this.victory(columnNumber,rowNumber,this.currentPlayer) || this.draw();
-
     if (!this.finished) { this.switchPlayer(); }
-
     return true;
   }
   
